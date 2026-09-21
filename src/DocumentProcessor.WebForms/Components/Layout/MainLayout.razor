@@ -1,0 +1,40 @@
+@inherits LayoutComponentBase
+@using DocumentProcessor.WebForms.Data
+@inject DatabaseInfo? DatabaseInfoService
+
+<header class="app-bar">
+    <div class="app-brand">
+        <span class="app-brand-mark"><i class="bi bi-stars"></i></span>
+        <span>Document Processor</span>
+    </div>
+
+    @if (DatabaseInfoService is not null)
+    {
+        var isPostgres = DatabaseInfoService.Provider == DatabaseProvider.PostgreSql;
+        var pillClass = isPostgres ? "db-pill db-pill-postgres" : "db-pill";
+        var iconClass = isPostgres ? "bi bi-rocket-takeoff-fill" : "bi bi-database";
+        var pillText = DatabaseInfoService.DisplayName + " · " + DatabaseInfoService.HostAddress;
+
+        <span class="@pillClass">
+            <i class="@iconClass"></i>
+            @pillText
+        </span>
+    }
+    else
+    {
+        <span class="db-pill">
+            <i class="bi bi-database"></i>
+            Database not resolved
+        </span>
+    }
+</header>
+
+<main class="app-main">
+    @Body
+</main>
+
+<footer class="app-footer">
+    Config: @(DatabaseInfoService?.CredentialSource ?? "unavailable")
+    <span class="app-footer-separator">·</span>
+    Summaries stored in @(DatabaseInfoService?.DisplayName ?? "no database")
+</footer>
